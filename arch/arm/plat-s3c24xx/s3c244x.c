@@ -59,6 +59,8 @@ void __init s3c244x_init_uarts(struct s3c2410_uartcfg *cfg, int no)
 	s3c24xx_init_uartdevs("s3c2440-uart", s3c2410_uart_resources, cfg, no);
 }
 
+extern struct platform_device s3c_device_ts;
+
 void __init s3c244x_map_io(void)
 {
 	/* register our io-tables */
@@ -70,6 +72,7 @@ void __init s3c244x_map_io(void)
 	s3c_device_sdi.name  = "s3c2440-sdi";
 	s3c_device_i2c0.name  = "s3c2440-i2c";
 	s3c_device_nand.name = "s3c2440-nand";
+	s3c_device_ts.name = "s3c2440-ts";
 	s3c_device_usbgadget.name = "s3c2440-usbgadget";
 }
 
