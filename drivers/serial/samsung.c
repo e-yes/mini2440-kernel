@@ -878,7 +878,13 @@ static struct uart_ops s3c24xx_serial_ops = {
 
 static struct uart_driver s3c24xx_uart_drv = {
 	.owner		= THIS_MODULE,
+#ifdef CONFIG_MACH_MINI2440
+	/* this was probably meant to be there in the first place, since the #define exists
+	 * having non-standard names like "s3c2410_serial" is a royal pain for every distro */
+	.dev_name	= S3C24XX_SERIAL_NAME,
+#else
 	.dev_name	= "s3c2410_serial",
+#endif
 	.nr		= CONFIG_SERIAL_SAMSUNG_UARTS,
 	.cons		= S3C24XX_SERIAL_CONSOLE,
 	.driver_name	= S3C24XX_SERIAL_NAME,
