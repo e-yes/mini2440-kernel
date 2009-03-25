@@ -430,6 +430,7 @@ static struct s3c24xx_led_platdata mini2440_led4_pdata __initdata = {
 static struct s3c24xx_led_platdata mini2440_led_backlight_pdata __initdata = {
 	.name		= "backlight",
 	.gpio		= S3C2410_GPG(4),
+	.flags		= S3C24XX_LEDF_STARTON,
 	.def_trigger	= "backlight",
 };
 
