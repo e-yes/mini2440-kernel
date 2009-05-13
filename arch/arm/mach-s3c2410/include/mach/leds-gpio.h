@@ -16,6 +16,7 @@
 
 #define S3C24XX_LEDF_ACTLOW	(1<<0)		/* LED is on when GPIO low */
 #define S3C24XX_LEDF_TRISTATE	(1<<1)		/* tristate to turn off */
+#define S3C24XX_LEDF_STARTON	(1<<2)		/* Initialise 'on' */
 
 struct s3c24xx_led_platdata {
 	unsigned int		 gpio;
