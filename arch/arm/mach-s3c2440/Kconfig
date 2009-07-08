@@ -87,6 +87,7 @@ config MACH_AT2440EVB
 config MACH_MINI2440
 	bool "MINI2440 development board"
 	select CPU_S3C2440
+	select S3C_DEV_USB_HOST
 	select EEPROM_AT24
 	select LEDS_TRIGGER_BACKLIGHT
 	select SND_S3C24XX_SOC_S3C24XX_UDA134X
