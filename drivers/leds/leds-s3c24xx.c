@@ -84,6 +84,7 @@ static int s3c24xx_led_probe(struct platform_device *dev)
 	led->cdev.default_trigger = pdata->def_trigger;
 	led->cdev.name = pdata->name;
 	led->cdev.flags |= LED_CORE_SUSPENDRESUME;
+	led->cdev.brightness = pdata->flags & S3C24XX_LEDF_STARTON ? 1 : 0;
 
 	led->pdata = pdata;
 
@@ -94,7 +95,8 @@ static int s3c24xx_led_probe(struct platform_device *dev)
 		s3c2410_gpio_cfgpin(pdata->gpio, S3C2410_GPIO_INPUT);
 	} else {
 		s3c2410_gpio_pullup(pdata->gpio, 0);
-		s3c2410_gpio_setpin(pdata->gpio, 0);
+		/* backlight led needs to be turned on early on */
+		s3c2410_gpio_setpin(pdata->gpio, led->cdev.brightness);
 		s3c2410_gpio_cfgpin(pdata->gpio, S3C2410_GPIO_OUTPUT);
 	}
 
