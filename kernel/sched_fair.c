@@ -1374,6 +1374,9 @@ static int select_task_rq_fair(struct task_struct *p, int sd_flag, int wake_flag
 
 	rcu_read_lock();
 	for_each_domain(cpu, tmp) {
+		if (!(tmp->flags & SD_LOAD_BALANCE))
+			continue;
+
 		/*
 		 * If power savings logic is enabled for a domain, see if we
 		 * are not overloaded, if so, don't balance wider.
@@ -1398,11 +1401,38 @@ static int select_task_rq_fair(struct task_struct *p, int sd_flag, int wake_flag
 				want_sd = 0;
 		}
 
-		if (want_affine && (tmp->flags & SD_WAKE_AFFINE) &&
-		    cpumask_test_cpu(prev_cpu, sched_domain_span(tmp))) {
+		if (want_affine && (tmp->flags & SD_WAKE_AFFINE)) {
+			int candidate = -1, i;
 
-			affine_sd = tmp;
-			want_affine = 0;
+			if (cpumask_test_cpu(prev_cpu, sched_domain_span(tmp)))
+				candidate = cpu;
+
+			/*
+			 * Check for an idle shared cache.
+			 */
+			if (tmp->flags & SD_PREFER_SIBLING) {
+				if (candidate == cpu) {
+					if (!cpu_rq(prev_cpu)->cfs.nr_running)
+						candidate = prev_cpu;
+				}
+
+				if (candidate == -1 || candidate == cpu) {
+					for_each_cpu(i, sched_domain_span(tmp)) {
+						if (!cpumask_test_cpu(i, &p->cpus_allowed))
+							continue;
+						if (!cpu_rq(i)->cfs.nr_running) {
+							candidate = i;
+							break;
+						}
+					}
+				}
+			}
+
+			if (candidate >= 0) {
+				affine_sd = tmp;
+				want_affine = 0;
+				cpu = candidate;
+			}
 		}
 
 		if (!want_sd && !want_affine)

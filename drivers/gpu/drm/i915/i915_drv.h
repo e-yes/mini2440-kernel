@@ -546,6 +546,7 @@ typedef struct drm_i915_private {
 	struct timer_list idle_timer;
 	bool busy;
 	u16 orig_clock;
+	struct drm_connector *int_lvds_connector;
 } drm_i915_private_t;
 
 /** driver private structure attached to each drm_gem_object */
@@ -957,6 +958,7 @@ extern int i915_wait_ring(struct drm_device * dev, int n, const char *caller);
 #define IS_I85X(dev) ((dev)->pci_device == 0x3582)
 #define IS_I855(dev) ((dev)->pci_device == 0x3582)
 #define IS_I865G(dev) ((dev)->pci_device == 0x2572)
+#define IS_I8XX(dev) (IS_I830(dev) || IS_845G(dev) || IS_I85X(dev) || IS_I865G(dev))
 
 #define IS_I915G(dev) ((dev)->pci_device == 0x2582 || (dev)->pci_device == 0x258a)
 #define IS_I915GM(dev) ((dev)->pci_device == 0x2592)
@@ -1018,9 +1020,12 @@ extern int i915_wait_ring(struct drm_device * dev, int n, const char *caller);
  */
 #define HAS_128_BYTE_Y_TILING(dev) (IS_I9XX(dev) && !(IS_I915G(dev) || \
 						      IS_I915GM(dev)))
+#define SUPPORTS_DIGITAL_OUTPUTS(dev)	(IS_I9XX(dev) && !IS_IGD(dev))
 #define SUPPORTS_INTEGRATED_HDMI(dev)	(IS_G4X(dev) || IS_IGDNG(dev))
 #define SUPPORTS_INTEGRATED_DP(dev)	(IS_G4X(dev) || IS_IGDNG(dev))
 #define SUPPORTS_EDP(dev)		(IS_IGDNG_M(dev))
+#define SUPPORTS_TV(dev)		(IS_I9XX(dev) && IS_MOBILE(dev) && \
+					!IS_IGDNG(dev) && !IS_IGD(dev))
 #define I915_HAS_HOTPLUG(dev) (IS_I945G(dev) || IS_I945GM(dev) || IS_G33(dev) || IS_I965G(dev))
 /* dsparb controlled by hw only */
 #define DSPARB_HWCONTROL(dev) (IS_G4X(dev) || IS_IGDNG(dev))
